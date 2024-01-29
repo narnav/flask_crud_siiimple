@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="msg"></div>
+    hello world
+    city<input id="city">
+    name<input id="stu_name" >
+    addr<input id="addr">
+    pin<input id="pin">
+    <button onclick="add()">Add</button>
+    <div id="display"></div>
+    <script>
+        const SERVER ="http://127.0.0.1:5000"
+        
+        let ar=[]
+        const getData=async()=>{
+            res =await axios.get("http://127.0.0.1:5000")
+            ar=res.data
+            console.table(ar);
+            // console.log(res);
+            buildGUI()
+        }
+
+        // function add(){}
+        const add=()=>{
+            axios.post(SERVER + "/new",{city:city.value, name:stu_name.value,addr:addr.value,pin:pin.value})
+            .then(res => msg.innerHTML ="<h1>DONE" )
+        }
+        const del_stu=(id)=>{
+            console.log("testttt" ,id);
+            axios.delete(SERVER + "/del/"+id)
+            buildGUI()
+        }
+        const upd_stu=(id)=>{
+            debugger
+            console.log("testttt" ,id);
+            axios.put(SERVER + "/upd/"+id,{city:city.value, name:stu_name.value,addr:addr.value,pin:pin.value})
+            buildGUI()
+        }
+
+        const buildGUI=()=>{
+            display.innerHTML =ar.map(student => `
+            <div> 
+                city: ${student.city},
+                addr: ${student.addr},
+                name: ${student.name},
+                pin: ${student.pin} 
+                <button onClick='del_stu(${student.id} )'>del</button>
+                <button onClick='upd_stu(${student.id} )'>upd</button>
+            </div>` ).join("")
+        }
+        
+        getData()
+    </script>
+</body>
+</html>
+<!-- http://127.0.0.1:5500 -->
